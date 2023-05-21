@@ -1,0 +1,174 @@
+import java.lang.ref.Cleaner;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.Scanner;
+
+public class EjercicioLibreJava {
+
+    public static void main(String[] args) {
+
+            //Impresión de pantalla Menú y ultimo movimiento antes de salir
+
+             //Comienza con $10.000 de saldo
+            double saldo = 10000;
+            int estado = 3;
+            boolean estado1 = true;
+            String ultimoMovimiento = "";
+            int montoRetiro = 0;
+            int montoDeposito = 0;
+            int opcion;
+            //Hacer menu de opciones
+            while(estado > 0){
+                System.out.println("************Menu**************");
+                System.out.println("opción 1: Retiro ");
+                System.out.println("opción 2: Depositar ");
+                System.out.println("opción 3: Estado de cuenta ");
+                System.out.println("opción 4: Quejas ");
+                System.out.println("opción 5: Últimos movimientos ");
+                System.out.println("opción 6: Hablar con asesor ");
+                System.out.println("opción 7: Salir ");
+                System.out.println("******************************");
+
+                Scanner scanner = new Scanner(System.in);
+                System.out.println("Ingrese opción: ");
+                opcion = scanner.nextInt();
+
+                //Opción 1: Retiro de dinero
+                while (estado1) {
+                    if (opcion == 1) {
+                        System.out.println("saldo disponible " + saldo);
+                        Scanner scanner1 = new Scanner(System.in);
+                        System.out.println("Ingrese cantidad a retirar");
+                        montoRetiro = scanner1.nextInt();
+                        //System.out.println(montoRetiro);
+                        if (montoRetiro > saldo) {
+                            System.out.println("No puede retirar, excede su saldo actual");
+                        } else if (montoRetiro > 6000) {
+                            System.out.println("No puede retirar más de 6000");
+                        } else if (!(montoDeposito % 50 == 0 || montoDeposito % 100 == 0)) {
+                            System.out.println("Recuerde que solo puede realizar retiro de multiplos de 50 0 100");
+                        }else {
+                            saldo = saldo - montoRetiro;
+                            ultimoMovimiento = ObtenerFecha() + " " + "Retiro de " + montoRetiro;
+                            System.out.println("Retiro exitoso...");
+                            System.out.println("Saldo actual " + saldo);
+                            estado = 3;
+                            break;
+
+                        };
+                        //Opción 2:Hacer depósitos
+                    } else if (opcion == 2) {
+                        System.out.println("***********************");
+                        System.out.println("----Menú deposito----");
+                        System.out.println("1-Cuenta de cheques");
+                        System.out.println("2-Tarjeta de crédito");
+                        System.out.println("3-Cuenta de terceros");
+                        System.out.println("***********************");
+                        estado = 3;
+                        int subOpcion = scanner.nextInt();
+                        switch (subOpcion){
+                            case 1 -> {
+                                System.out.println("Ingrese monto que quiere depositar");
+                                montoDeposito =  scanner.nextInt();
+                                if (montoDeposito % 50 == 0 || montoDeposito % 100 == 0){
+                                  saldo = saldo + montoDeposito;
+                                  ultimoMovimiento = ObtenerFecha() + " " + "Deposito de " + montoDeposito + "a la cuenta de cheques";
+                                  System.out.println(" A relizado un deposito a su cuenta cheque por un monto de: " + montoDeposito);
+                                }
+                            }
+
+                            case 2 ->{
+                                System.out.println("Ingrese monto que quiere depositar a su tarjeta de créditos");
+                                montoDeposito = scanner.nextInt();
+
+                                if(saldo < 200.10){
+                                    System.out.println("Saldo insuficiente para realizar deposito");
+                                    System.out.println("Cargo por deposito a tarjeta de crédito es de $200.10,Asegurese de tener la cantidad suficiente para el deposito");
+
+                                }else {
+                                    saldo = saldo - 200.10 + montoDeposito;
+                                    ultimoMovimiento = ObtenerFecha() + " " + "Deposito de " + montoDeposito + "a la cuenta tarjeta de crédito";
+                                    System.out.println("A realizado un deposito a tarjeta de crédito por un monto de: " + montoDeposito);
+                                }
+                            }
+
+                            case 3 ->{
+                                System.out.println("Ingrese monto que quiere depositar a la cuenta de terceros");
+                                montoDeposito = scanner.nextInt();
+
+                                if(saldo < 666.22){
+                                    System.out.println("Saldo insuficiente para realizar deposito");
+                                    System.out.println("Cargo por deposito a cuenta de terceros es de $666.22, Asegurese de tener la cantidad suficiente para el deposito");
+
+                                }else {
+                                    saldo = saldo - 666.22 + montoDeposito;
+                                    ultimoMovimiento = ObtenerFecha() + " " + "Deposito de " + montoDeposito + "a la cuenta de terceros";
+                                    System.out.println("A realizado un deposito a cuenta de terceros por un monto de: " + montoDeposito);
+                                }
+                            }
+                        }
+                        break;
+                    //Opción 3:Estado de cuenta
+                    }else if (opcion == 3){
+                        System.out.println("Su estado de cuenta es: " + saldo);
+                        estado = 3;
+                        break;
+                    //Opción 5:Últimos movimientos
+                    }else if(opcion == 5){
+
+                        if(ultimoMovimiento.isEmpty()){
+                            System.out.println("No a realizado ningún movimiento");
+                        }else{
+                            System.out.println(ultimoMovimiento);
+
+                        }
+                        estado = 3;
+                        break;
+                    //Opción 6:Hablar con un asesor
+                    } else if (opcion == 6) {
+                        System.out.println("No es horario de atención");
+                        estado = 3;
+                        break;
+                    //Opción 7:Salir del cajero
+                    //Opción 4:Quejas
+                    } else if (opcion == 7 || opcion == 4) {
+                        if(ultimoMovimiento.isEmpty()){
+                            System.out.println("No a realizado ningún movimiento");
+                        }else{
+                            System.out.println(ultimoMovimiento);
+                        }
+                        estado = 0;
+                        break;
+                    }else if(!(opcion >= 1 && opcion <= 7)){
+                        //Opción desconocida(error y volver a consultar opción
+                        System.out.println("opción invalida");
+                        estado --;
+                        break;
+
+                    };
+
+                };
+
+
+                //estado = false;
+
+            }
+
+
+        System.out.println("Gracias!!");
+    }
+    public static String ObtenerFecha() {
+        // Obtener la fecha y hora actual
+        LocalDateTime fechaHoraActual = LocalDateTime.now();
+
+        // Definir el formato deseado
+        DateTimeFormatter formatoFechaHora = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+
+        // Formatear la fecha y hora actual utilizando el formato
+        String fechaHoraFormateada = fechaHoraActual.format(formatoFechaHora);
+
+        return fechaHoraActual.format(formatoFechaHora);
+
+    }
+}
